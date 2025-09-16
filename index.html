@@ -203,14 +203,22 @@
     }
 
     function updateETAs(){
-      var goals = [
-        [els.eta1, 1], [els.eta100, 100], [els.eta1000, 1000],
-        [els.eta100k, 100000], [els.eta1m, 1000000], [els.eta10m, 10000000]
-      ];
-      for (var i=0;i<goals.length;i++){
-        var el = goals[i][0], target = goals[i][1];
-        if (!el) continue;
-        el.textContent = ratePerSec > 0 ? formatDuration((target - acc) / ratePerSec) : '—';
+      var steps = [1, 100, 1000, 100000, 1000000, 10000000];
+      var elsArr = [els.eta1, els.eta100, els.eta1000, els.eta100k, els.eta1m, els.eta10m];
+      if (ratePerSec <= 0){
+        for (var j=0;j<elsArr.length;j++){ if (elsArr[j]) elsArr[j].textContent = '—'; }
+        return;
+      }
+      for (var i=0;i<steps.length;i++){
+        var el = elsArr[i]; if (!el) continue;
+        var step = steps[i];
+        var progress = acc % step; if (progress < 0) progress += step;
+        var eps = step * 1e-9;
+        var remainAmount = step - progress;
+        if (remainAmount <= eps) remainAmount = step; // переключаемся на следующий цикл
+        var remain = remainAmount / ratePerSec;
+        if (!isFinite(remain) || remain < 0) remain = 0;
+        el.textContent = formatDuration(remain);
       }
     }
 
@@ -290,6 +298,16 @@
       if (!confirm('Сбросить накопленную сумму в ноль?')) return;
       finalizeAcc(); acc = 0; render();
     });
+
+    // -------- Mini self-tests (не мешают работе) --------
+    (function(){
+      try {
+        var rps = computePerSec(35000, 17.33, 365);
+        var perDay = rps * 86400;
+        console.assert(Math.abs(perDay - 16.6178) < 0.1, 'perDay≈16.62');
+        console.assert(formatDuration(0) === '00:00:00', 'formatDuration zero');
+      } catch(e) { console.warn('Self-tests skipped', e); }
+    })();
   </script>
 </body>
 </html>

@@ -229,11 +229,11 @@
       var perDay = ratePerSec * 86400;
       var perMonth = perDay * 30; // 30-дневный месяц
       var perYear = ratePerSec * basis * 86400; // = capital * apr/100
-      els.perHourDay.textContent = formatShort(perHour, frac) + ' ₽/ч · ' + formatShort(perDay, frac) + ' ₽/д';
-      els.outPerDay.textContent = formatShort(perDay, frac) + ' ₽';
-      if (perMonth > 0){ els.outPerMonthWrap.style.display = ''; els.outPerMonth.textContent = formatShort(perMonth, frac) + ' ₽'; }
+      els.perHourDay.textContent = formatShort(perHour, 2) + ' ₽/ч · ' + formatShort(perDay, 2) + ' ₽/д';
+      els.outPerDay.textContent = formatShort(perDay, 2) + ' ₽';
+      if (perMonth > 0){ els.outPerMonthWrap.style.display = ''; els.outPerMonth.textContent = formatShort(perMonth, 2) + ' ₽'; }
       else { els.outPerMonthWrap.style.display = 'none'; }
-      if (perYear > 0){ els.outPerYearWrap.style.display = ''; els.outPerYear.textContent = formatShort(perYear, frac) + ' ₽'; }
+      if (perYear > 0){ els.outPerYearWrap.style.display = ''; els.outPerYear.textContent = formatShort(perYear, 2) + ' ₽'; }
       else { els.outPerYearWrap.style.display = 'none'; }
       updateETAs();
     }
